@@ -9,6 +9,13 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 
+def get_upload_path_offer(instance, filename):
+    return os.path.join('offer', '{}.{}'.format(uuid.uuid4(), filename.split('.')[-1]))
+
+def get_upload_path_profile(instance, filename):
+    return os.path.join('profile', '{}.{}'.format(uuid.uuid4(), filename.split('.')[-1]))
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -69,3 +76,53 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f'{self.first_name}'
 
 
+class Offer(models.Model):
+    class Meta:
+        db_table = "offer"
+
+    offer_id = models.AutoField(primary_key=True)
+    offer_media = models.FileField(upload_to=get_upload_path_offer, blank=True, null=False)
+    top_up_coin = models.IntegerField(null=True)
+    cash = models.IntegerField(null=True)
+
+
+class Profile(models.Model):
+    class Meta:
+        db_table = "profile"
+
+    profile_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    profile_media = models.FileField(upload_to=get_upload_path_profile, blank=True, null=False)
+    coin = models.IntegerField(null=True)
+    cash = models.IntegerField(null=True)
+
+
+class ScratchCard(models.Model):
+    class Meta:
+        db_table = "scratch_card"
+
+    scratch_card_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    offer_id = models.ForeignKey(Offer, on_delete=models.CASCADE, db_column='offer_id')
+   
+
+class Order(models.Model):
+    class Meta:
+        db_table = "order"
+
+    order_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    datetime = models.DateTimeField('datetime', null=False, default=timezone.now)
+    order_no = models.IntegerField(null=True)
+  
+
+class WireTransfer(models.Model):
+    class Meta:
+        db_table = "wire_transfer"
+
+    wire_transfer_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    acc_no = models.CharField(unique=False, null=False, max_length=18)
+    ifsc = models.CharField(unique=False, null=True, max_length=18)
+    swift = models.CharField(unique=False, null=True, max_length=18)
+    amount = models.DecimalField(blank=True,  null=True, max_digits=10, decimal_places=2)
