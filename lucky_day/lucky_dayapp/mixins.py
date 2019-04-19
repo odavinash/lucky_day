@@ -24,7 +24,12 @@ class UserSerializer(object):
         Serialize user and its related objects.
         A serializer must provide self.user to consume this method
         """
-        user = serialize('json', [self.user])
+        print('okay....')
+        try:
+            user = serialize('json', [self.user])
+        except Exception as e:
+            print(e)
+        print('okay12')
         user = json.loads(user)[0]['fields']
         user.pop('password')
         user.pop('groups')
