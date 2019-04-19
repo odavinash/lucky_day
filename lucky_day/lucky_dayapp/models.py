@@ -44,25 +44,28 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-	class Meta:
-		db_table = "user"
+    class Meta:
+    	db_table = "user"
 
-	email = models.EmailField(unique=True)
-	first_name = models.CharField(_('first name'), max_length=30, blank=True, null=True)
-	last_name = models.CharField(_('last name'), max_length=150, blank=True, null=True)
-	is_staff = models.BooleanField(
-	    _('staff status'),
-	    default=False,
-	    help_text=_('Designates whether the user can log into this admin site.'),
-	)
-	is_active = models.BooleanField(
-	    _('active'),
-	    default=False,
-	    help_text=_('Designates whether this user should be treated as active. '),
-	)
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(_('first name'), max_length=30, blank=True, null=True)
+    last_name = models.CharField(_('last name'), max_length=150, blank=True, null=True)
+    provider_id = models.CharField(max_length=150, blank=True, null=True)
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=False,
+        help_text=_('Designates whether this user should be treated as active. '),
+    )
 
-	USERNAME_FIELD = 'email'
-	objects = UserManager()
+    USERNAME_FIELD = 'email'
+    objects = UserManager()
 
-	def __str__(self):
-	    return f'{self.first_name}'
+    def __str__(self):
+        return f'{self.first_name}'
+
+

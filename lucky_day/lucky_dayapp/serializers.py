@@ -8,10 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed, ValidationError
 
 
 class SignUpSerializer(UserSerializer, serializers.ModelSerializer):
-    first_name = serializers.CharField(write_only=True, max_length=150, default="")
-    last_name = serializers.CharField(write_only=True, max_length=150, default="")
-    email = serializers.EmailField()
-   
+    
     class Meta:
         model = get_user_model()
         fields = (
@@ -77,4 +74,51 @@ class LoginSerializer(UserSerializer, serializers.Serializer):
 
         self.user = user
 
+        return data
+
+
+class LoginSocialSerializer(UserSerializer, serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.CharField()
+    password = serializers.CharField()
+    provider_id = serializers.CharField()
+
+    class Meta:
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'password'
+            'provider_id',
+            )
+
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    @staticmethod
+    def validate_password(password):
+        if validate_password(password) is None:
+            return password
+
+    def validate(self, data):
+        print(data.get('email'))
+        print(data.get('password'))
+        user = authenticate(
+            self.context['request'],
+            email=data.get('email'),
+            password=data.get('password'),
+        )
+        
+        if not user:
+            pass
+        else:
+            pass
+
+        self.user = user
+
+        print('data start...')
+        print(self.user)
+        print('data end.....')
         return data
