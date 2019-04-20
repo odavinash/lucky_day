@@ -94,3 +94,19 @@ class UpdateProfile(generics.UpdateAPIView):
             return Response({'success': True, 'data':response.data})
         except Exception as e:
             return Response({'message': format(e.args[-1]), 'success': False})
+
+
+class ScratchCard(generics.CreateAPIView):
+    serializer_class = serializers.ScratchCardSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.ScratchCard
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response ({"status": 200, "message" : 'Scratch Card successfully.'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response ({"status": 400, "message" : "Fail to scratch card"}, status=status.HTTP_400_BAD_REQUEST)

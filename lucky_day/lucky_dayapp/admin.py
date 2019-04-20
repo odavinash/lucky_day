@@ -11,7 +11,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(models.Offer)
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ('offer_media', 'top_up_coin', 'cash',)
+    list_display = ('offer_id', 'offer_media', 'top_up_coin', 'cash',)
     search_fields = ('top_up_coin', 'cash')
 
 

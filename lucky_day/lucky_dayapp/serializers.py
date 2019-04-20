@@ -124,3 +124,18 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Profile
         fields = ('__all__')
+
+
+class ScratchCardSerializer(serializers.ModelSerializer):
+    
+    offer_id = serializers.IntegerField()
+
+    class Meta:
+        model = models.ScratchCard
+        fields = ('offer_id',)
+
+    def create(self, validated_data):
+        validated_data['user_id'] = self.context['request'].user
+        offer_id = models.Offer.objects.get(offer_id=validated_data['offer_id'])
+        validated_data['offer_id'] = offer_id
+        return super(ScratchCardSerializer, self).create(validated_data)
