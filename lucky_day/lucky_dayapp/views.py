@@ -44,79 +44,6 @@ class Login(generics.GenericAPIView):
             return Response ({"status": 400, "message" : "Authentication fail"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class LoginSocial(generics.GenericAPIView):
-#     serializer_class = serializers.LoginSocialSerializer
-
-#     def post(self, request):
-#         try:
-#             # print(request.data)
-#             # # first_name = request.data.pop('first_name')
-#             # # last_name = request.data.pop('last_name')
-#             # # provider_id = request.data.pop('provider_id')
-#             # print(request.data)
-#             serializer = self.get_serializer(data=request.data)
-#             try:
-#                 user_obj = get_user_model().objects.get(Q(provider_id=request.data.get('provider_id')) | Q(email=request.data.get('email')))
-#                 print(user_obj)
-#             except get_user_model().DoesNotExist:
-#                 print('eeeeeeeeeeeeeeeeeeeeeeeeeeee')
-#                 get_user_model().objects.create(email=request.data.get('email'),
-#                                                             first_name='aaa',
-#                                                             last_name='bb',
-#                                                             provider_id='ak',
-#                                                             password=request.data.get('password'),
-#                                                             )
-#                 print('created')
-#             serializer.is_valid(raise_exception=True)
-           
-#             data = serializer.get_data()
-#             print('end.....')
-            
-#             return Response({"status": 200, 'message': 'success', 'success': True, 'data': data})
-#         except Exception as e:
-#             print(e)
-#             return Response ({"status": 400, "message" : "Authentication fail"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class LoginSocial(generics.CreateAPIView):
-#     serializer_class = serializers.LoginSocialSerializer
-#     model = get_user_model()
-
-#     def create(self, request, *args, **kwargs):
-#         try:
-#             dist = OrderedDict()
-
-#             serializer = self.get_serializer(data=request.data)
-#             serializer.is_valid(raise_exception=True)
-
-#             user_obj = get_user_model().objects.filter(Q(provider_id=request.data.get('provider_id')) | Q(email=request.data.get('email'))).exists()
-            
-#             if not user_obj:
-#                 self.perform_create(serializer)
-#             else:
-#                 user = authenticate(
-#                     self.request,
-#                     email=request.data.get('email'),
-#                     password=request.data.get('password'),
-#                 )
-                
-#                 if not user:
-#                     print(user)
-#                 else:
-#                     print(user)
-
-#                 self.user = user
-                
-#                 print(user)
-            
-            
-#                 data = serializer.get_data()
-#             return Response({"status": 200, 'message': 'success', 'success': True, 'data': data})
-#         except Exception as e:
-#             print(e)
-#             return Response({'message': format(e.args[-1]), 'success': False})
-
-
 class LoginSocial(generics.CreateAPIView):
     serializer_class = serializers.LoginSocialSerializer
     model = get_user_model()
@@ -126,3 +53,44 @@ class LoginSocial(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.get_data())
+
+
+class GetOffer(generics.ListAPIView):
+    serializer_class = serializers.OfferSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.Offer
+
+    def get_queryset(self):
+        try:
+            page = self.kwargs['page']
+            start = ((page - 1)*10)
+            end = start + 10
+
+            return self.model.objects.all().order_by('-offer_id')[start:end]
+        except self.model.DoesNotExist:
+            return None
+
+    def list(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_queryset(), many=True)
+            return Response({'data': serializer.data})
+        except Exception as e:
+            return Response ({"status": 400, "message" : "Fail to get offer"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateProfile(generics.UpdateAPIView):
+    serializer_class = serializers.ProfileSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.Profile
+    http_method_names = ['patch']
+
+    def get_object(self):
+        instance, _ = self.model.objects.get_or_create(user_id=self.request.user)
+        return instance
+
+    def update(self, request, *args, **kwargs):
+        try:
+            response = super(UpdateProfile, self).update(request, *args, **kwargs)
+            return Response({'success': True, 'data':response.data})
+        except Exception as e:
+            return Response({'message': format(e.args[-1]), 'success': False})

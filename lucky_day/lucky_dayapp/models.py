@@ -82,8 +82,8 @@ class Offer(models.Model):
 
     offer_id = models.AutoField(primary_key=True)
     offer_media = models.FileField(upload_to=get_upload_path_offer, blank=True, null=False)
-    top_up_coin = models.IntegerField(null=True)
-    cash = models.IntegerField(null=True)
+    top_up_coin = models.IntegerField(null=True, blank=True)
+    cash = models.IntegerField(null=True, blank=True)
 
 
 class Profile(models.Model):
@@ -93,8 +93,8 @@ class Profile(models.Model):
     profile_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
     profile_media = models.FileField(upload_to=get_upload_path_profile, blank=True, null=False)
-    coin = models.IntegerField(null=True)
-    cash = models.IntegerField(null=True)
+    coin = models.IntegerField(null=True, blank=True)
+    cash = models.IntegerField(null=True, blank=True)
 
 
 class ScratchCard(models.Model):
