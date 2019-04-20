@@ -17,7 +17,7 @@ class OfferAdmin(admin.ModelAdmin):
 
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('profile_media', 'user_id', 'coin', 'cash',)
+    list_display = ('profile_id', 'profile_media', 'user_id', 'coin', 'cash',)
     search_fields = ('coin', 'cash')
 
 
@@ -37,3 +37,9 @@ class OrderAdmin(admin.ModelAdmin):
 class WireTransferAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'acc_no')
     search_fields = ('acc_no',)
+
+
+@admin.register(models.LeaderBoard)
+class LeaderBoardAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'rank_no', 'date')
+    search_fields = ('rank_no', 'date')

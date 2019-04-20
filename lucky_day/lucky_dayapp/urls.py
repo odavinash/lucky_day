@@ -13,6 +13,8 @@ urlpatterns = [
 	path('update-profile', views.UpdateProfile.as_view(), name='update-profile'),
 	path('scratch-card', views.ScratchCard.as_view(), name='scratch-card'),
 	path('order', views.Order.as_view(), name='order'),
+	path('wire-transfer', views.WireTransfer.as_view(), name='wire-transfer'),
+	path('get-leaderboard/<int:page>', views.GetLeaderboard.as_view(), name='get-leaderboard'),
 ]
 
 

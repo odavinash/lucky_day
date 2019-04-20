@@ -57,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True, null=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True, null=True)
-    provider_id = models.CharField(max_length=150, blank=True, null=True)
+    provider_id = models.CharField(max_length=150, blank=True,)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -125,3 +125,13 @@ class WireTransfer(models.Model):
     ifsc = models.CharField(unique=False, null=True, max_length=18)
     swift = models.CharField(unique=False, null=True, max_length=18)
     amount = models.DecimalField(blank=True,  null=True, max_digits=10, decimal_places=2)
+
+
+class LeaderBoard(models.Model):
+    class Meta:
+        db_table = "leaderboard"
+
+    leaderboard_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    rank_no = models.IntegerField(unique=False, null=False)
+    date = models.DateField('date', null=False, default=timezone.now)

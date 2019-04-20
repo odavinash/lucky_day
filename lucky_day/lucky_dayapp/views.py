@@ -65,8 +65,8 @@ class GetOffer(generics.ListAPIView):
             page = self.kwargs['page']
             start = ((page - 1)*10)
             end = start + 10
-
-            return self.model.objects.all().order_by('-offer_id')[start:end]
+            print(models.ScratchCard.objects.all())
+            return self.model.objects.filter(~Q(offer_id__in=models.ScratchCard.objects.values('offer_id').all())).order_by('-offer_id')[start:end]
         except self.model.DoesNotExist:
             return None
 
@@ -126,3 +126,42 @@ class Order(generics.CreateAPIView):
         except Exception as e:
             print(e)
             return Response ({"status": 400, "message" : "Fail to Order"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WireTransfer(generics.CreateAPIView):
+    serializer_class = serializers.WireTransferSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.WireTransfer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response ({"status": 200, "message" : 'Wire transfer successfully.'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response ({"status": 400, "message" : "Fail to Wire transfer"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetLeaderboard(generics.ListAPIView):
+    serializer_class = serializers.LeaderBoardSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.LeaderBoard
+
+    def get_queryset(self):
+        try:
+            page = self.kwargs['page']
+            start = ((page - 1)*10)
+            end = start + 10
+
+            return self.model.objects.all().order_by('-leaderboard_id')[start:end]
+        except self.model.DoesNotExist:
+            return None
+
+    def list(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_queryset(), many=True)
+            return Response({'data': serializer.data})
+        except Exception as e:
+            return Response ({"status": 400, "message" : "Fail to get leaderboard"}, status=status.HTTP_400_BAD_REQUEST)

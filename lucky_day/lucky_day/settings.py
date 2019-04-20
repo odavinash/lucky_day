@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
 
     'lucky_dayapp',
+
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CRONJOBS = [
+    ('0 0 * * *', 'lucky_day.cron.create_leaderboard', '>> /home/ashwmadhu/ASHWMADHU/Projects/lucky-day/project/lucky_day/lucky_day/leaderboard.log'),
 ]
 
 ROOT_URLCONF = 'lucky_day.urls'
