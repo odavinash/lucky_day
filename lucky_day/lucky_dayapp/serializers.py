@@ -138,7 +138,7 @@ class ScratchCardSerializer(serializers.ModelSerializer):
         validated_data['user_id'] = self.context['request'].user
         offer_id = models.Offer.objects.get(offer_id=validated_data['offer_id'])
         validated_data['offer_id'] = offer_id
-        
+
         return super(ScratchCardSerializer, self).create(validated_data)
 
 
@@ -152,3 +152,22 @@ class OrderSerializer(serializers.ModelSerializer):
         validated_data['user_id'] = self.context['request'].user
 
         return super(OrderSerializer, self).create(validated_data)
+
+
+class WireTransferSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.WireTransfer
+        exclude = ('user_id',)
+
+    def create(self, validated_data):
+        validated_data['user_id'] = self.context['request'].user
+
+        return super(WireTransferSerializer, self).create(validated_data)
+
+
+class LeaderBoardSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.LeaderBoard
+        fields = ('__all__')
