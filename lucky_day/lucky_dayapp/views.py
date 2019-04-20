@@ -110,3 +110,19 @@ class ScratchCard(generics.CreateAPIView):
         except Exception as e:
             print(e)
             return Response ({"status": 400, "message" : "Fail to scratch card"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Order(generics.CreateAPIView):
+    serializer_class = serializers.OrderSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.Order
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response ({"status": 200, "message" : 'Order successfully.'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response ({"status": 400, "message" : "Fail to Order"}, status=status.HTTP_400_BAD_REQUEST)

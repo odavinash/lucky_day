@@ -29,8 +29,8 @@ class ScratchCardAdmin(admin.ModelAdmin):
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'datetime', 'order_no')
-    search_fields = ('datetime', 'order_no')
+    list_display = ('user_id', 'datetime',)
+    search_fields = ('datetime', )
 
 
 @admin.register(models.WireTransfer)

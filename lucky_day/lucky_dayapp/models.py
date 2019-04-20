@@ -113,8 +113,7 @@ class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
     datetime = models.DateTimeField('datetime', null=False, default=timezone.now)
-    order_no = models.IntegerField(null=True)
-  
+    
 
 class WireTransfer(models.Model):
     class Meta:

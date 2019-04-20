@@ -12,6 +12,7 @@ urlpatterns = [
 	path('get-offer/<int:page>', views.GetOffer.as_view(), name='get-offer'),
 	path('update-profile', views.UpdateProfile.as_view(), name='update-profile'),
 	path('scratch-card', views.ScratchCard.as_view(), name='scratch-card'),
+	path('order', views.Order.as_view(), name='order'),
 ]
 
 
