@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
-    
+
     'lucky_dayapp',
 
     'django_crontab',
@@ -91,10 +91,10 @@ WSGI_APPLICATION = 'lucky_day.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lucky_day',
-        'USER':'root',
-        'PASSWORD':'root',
-        'HOST':'127.0.0.1',
+        'NAME': 'demotask$lucky_day',
+        'USER':'demotask',
+        'PASSWORD':'root@root',
+        'HOST':'demotask.mysql.pythonanywhere-services.com',
         'PORT':''
     }
 }
@@ -178,5 +178,5 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=36500),
     'JWT_AUTH_HEADER_PREFIX': 'Token',
- 
+
 }
