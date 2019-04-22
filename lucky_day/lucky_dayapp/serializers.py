@@ -168,6 +168,10 @@ class WireTransferSerializer(serializers.ModelSerializer):
 
 class LeaderBoardSerializer(serializers.ModelSerializer):
     
+    first_name = serializers.CharField(source='user_id.first_name')
+    last_name = serializers.CharField(source='user_id.last_name')
+    #profile_media = serializers.CharField(source='user_id.profile_set.first.profile_media')
+
     class Meta:
         model = models.LeaderBoard
         fields = ('__all__')

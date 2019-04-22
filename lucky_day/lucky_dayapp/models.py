@@ -91,7 +91,7 @@ class Profile(models.Model):
         db_table = "profile"
 
     profile_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id', related_name='profile')
     profile_media = models.FileField(upload_to=get_upload_path_profile, blank=True, null=False)
     coin = models.IntegerField(null=True, blank=True)
     cash = models.IntegerField(null=True, blank=True)

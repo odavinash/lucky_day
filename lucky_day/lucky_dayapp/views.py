@@ -164,4 +164,5 @@ class GetLeaderboard(generics.ListAPIView):
             serializer = self.get_serializer(self.get_queryset(), many=True)
             return Response({'data': serializer.data})
         except Exception as e:
+            print(e)
             return Response ({"status": 400, "message" : "Fail to get leaderboard"}, status=status.HTTP_400_BAD_REQUEST)
