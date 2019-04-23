@@ -65,8 +65,7 @@ class GetOffer(generics.ListAPIView):
             page = self.kwargs['page']
             start = ((page - 1)*10)
             end = start + 10
-            print(models.ScratchCard.objects.all())
-            return self.model.objects.filter(~Q(offer_id__in=models.ScratchCard.objects.values('offer_id').all())).order_by('-offer_id')[start:end]
+            return self.model.objects.filter(~Q(offer_id__in=models.ScratchCard.objects.values('offer_id').filter(user_id=self.request.user))).order_by('-offer_id')[start:end]
         except self.model.DoesNotExist:
             return None
 
@@ -75,6 +74,7 @@ class GetOffer(generics.ListAPIView):
             serializer = self.get_serializer(self.get_queryset(), many=True)
             return Response({'data': serializer.data})
         except Exception as e:
+            print(e)
             return Response ({"status": 400, "message" : "Fail to get offer"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -162,7 +162,9 @@ class GetLeaderboard(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         try:
             serializer = self.get_serializer(self.get_queryset(), many=True)
-            return Response({'data': serializer.data})
+            user_rank = models.LeaderBoard.objects.values('rank_no', 'user_id__first_name', 'user_id__last_name', 'user_id__profile__profile_media').get(user_id=self.request.user)
+            print(user_rank)
+            return Response({'user_rank': user_rank, 'data': serializer.data})
         except Exception as e:
             print(e)
             return Response ({"status": 400, "message" : "Fail to get leaderboard"}, status=status.HTTP_400_BAD_REQUEST)
