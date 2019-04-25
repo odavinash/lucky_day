@@ -7,6 +7,7 @@ import json
 from rest_framework_jwt.utils import jwt_payload_handler
 import jwt
 from lucky_day import settings
+from lucky_dayapp import models
 
 
 class UserSerializer(object):
@@ -39,6 +40,14 @@ class UserSerializer(object):
         user.pop('user_permissions')
         user.pop('last_login')
         
+        try:
+            profile = models.Profile.objects.get(user_id=self.user)
+            user['profile_media'] = str(profile.profile_media)
+            user['coin'] = profile.coin
+            user['cash'] = profile.cash
+        except Exception as e:
+            print(e)
+
         payload = jwt_payload_handler(self.user)
         token = jwt.encode(payload, settings.SECRET_KEY)
         
