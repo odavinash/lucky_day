@@ -96,6 +96,26 @@ class UpdateProfile(generics.UpdateAPIView):
             return Response({'message': format(e.args[-1]), 'success': False})
 
 
+class GetProfile(generics.RetrieveAPIView):
+    serializer_class = serializers.ProfileSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.Profile
+    queryset = models.Profile.objects.all()
+
+    def get_object(self):
+        try:
+            return self.model.objects.get(user_id=self.request.user)
+        except self.model.DoesNotExist:
+            return None
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            serializer = super(GetProfile, self).retrieve(request, args, kwargs)
+            return Response({"status": 200, 'data': serializer.data})
+        except Exception as e:
+            return Response ({"status": 400, "message" : "Fail to fetch profile"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ScratchCard(generics.CreateAPIView):
     serializer_class = serializers.ScratchCardSerializer
     permission_classes = (IsAuthenticated,)
