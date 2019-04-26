@@ -9,7 +9,7 @@ from lucky_day.utils import create_profile
 
 
 class SignUpSerializer(UserSerializer, serializers.ModelSerializer):
-    
+
     class Meta:
         model = get_user_model()
         fields = (
@@ -45,9 +45,9 @@ class SignUpSerializer(UserSerializer, serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(**validated_data)
-        
+
         self.user = user
-        
+
         create_profile(user)
 
         return user
@@ -69,7 +69,7 @@ class LoginSerializer(UserSerializer, serializers.Serializer):
             email=data.get('email'),
             password=data.get('password'),
         )
-        
+
         if not user:
         	print(user)
         else:
@@ -82,7 +82,7 @@ class LoginSerializer(UserSerializer, serializers.Serializer):
 
 
 class LoginSocialSerializer(UserSerializer, serializers.ModelSerializer):
-    
+
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email = serializers.CharField()
@@ -93,7 +93,7 @@ class LoginSocialSerializer(UserSerializer, serializers.ModelSerializer):
         read_only_fields = ('is_staff', 'is_active', 'last_login', 'groups', 'user_permissions', 'is_superuser',
                             'last_update_userid', 'last_update_date')
         exclude = ('password',)
-        
+
     def create(self, validated_data):
         user, _ = get_user_model().objects.update_or_create(
             email=self.validated_data.get('email'),
@@ -106,28 +106,28 @@ class LoginSocialSerializer(UserSerializer, serializers.ModelSerializer):
             }
         )
         self.user = user
-        
+
         create_profile(user)
-        
+
         return user
 
 
 class OfferSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = models.Offer
         fields = ('__all__')
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = models.Profile
         fields = ('__all__')
 
 
 class ScratchCardSerializer(serializers.ModelSerializer):
-    
+
     offer_id = serializers.IntegerField()
 
     class Meta:
@@ -154,7 +154,7 @@ class ScratchCardSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = models.Order
         fields = ('order_id',)
@@ -166,7 +166,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class WireTransferSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = models.WireTransfer
         exclude = ('user_id',)
@@ -178,10 +178,10 @@ class WireTransferSerializer(serializers.ModelSerializer):
 
 
 class LeaderBoardSerializer(serializers.ModelSerializer):
-    
+
     first_name = serializers.CharField(source='user_id.first_name')
     last_name = serializers.CharField(source='user_id.last_name')
-    profile = serializers.CharField(source='user_id.profile.first.profile_media')
+    #profile = serializers.CharField(source='user_id.profile.first.profile_media')
 
     class Meta:
         model = models.LeaderBoard
