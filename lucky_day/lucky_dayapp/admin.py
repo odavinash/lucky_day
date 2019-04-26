@@ -43,3 +43,9 @@ class WireTransferAdmin(admin.ModelAdmin):
 class LeaderBoardAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'rank_no', 'date')
     search_fields = ('rank_no', 'date')
+
+
+@admin.register(models.App_Settings)
+class App_SettingsAdmin(admin.ModelAdmin):
+    list_display = ('app_settings_id', 'top_up_coin')
+    search_fields = ('app_settings_id', 'top_up_coin')

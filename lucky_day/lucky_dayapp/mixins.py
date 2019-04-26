@@ -25,12 +25,12 @@ class UserSerializer(object):
         Serialize user and its related objects.
         A serializer must provide self.user to consume this method
         """
-        print('okay....')
+        
         try:
             user = serialize('json', [self.user])
         except Exception as e:
             print(e)
-        print('okay12')
+    
         user = json.loads(user)[0]['fields']
         user.pop('password')
         user.pop('groups')
@@ -45,6 +45,9 @@ class UserSerializer(object):
             user['profile_media'] = str(profile.profile_media)
             user['coin'] = profile.coin
             user['cash'] = profile.cash
+
+            app_settings = models.App_Settings.objects.filter()[:1].get()
+            user['app_settings_coin'] = app_settings.top_up_coin
         except Exception as e:
             print(e)
 
