@@ -136,8 +136,19 @@ class ScratchCardSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user_id'] = self.context['request'].user
-        offer_id = models.Offer.objects.get(offer_id=validated_data['offer_id'])
-        validated_data['offer_id'] = offer_id
+        offer = models.Offer.objects.get(offer_id=validated_data['offer_id'])
+        
+        profile = models.Profile.objects.get(user_id=self.context['request'].user)
+        
+        if offer.top_up_coin is not None:
+            profile.coin += offer.top_up_coin
+        
+        if offer.cash is not None:
+            profile.cash += offer.cash
+
+        profile.save()
+
+        validated_data['offer_id'] = offer
 
         return super(ScratchCardSerializer, self).create(validated_data)
 
