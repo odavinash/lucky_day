@@ -126,7 +126,13 @@ class ScratchCard(generics.CreateAPIView):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
-            return Response ({"status": 200, "message" : 'Scratch Card successfully.'}, status=status.HTTP_201_CREATED)
+
+            offer = models.Offer.objects.get(offer_id=request.data['offer_id'])
+            if offer.top_up_coin is not None:
+                return Response ({"status": 200, 'coin': offer.top_up_coin, "message" : 'Scratch Card successfully.'}, status=status.HTTP_201_CREATED)
+        
+            if offer.cash is not None:
+                return Response ({"status": 200, 'cash': offer.cash, "message" : 'Scratch Card successfully.'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             print(e)
             return Response ({"status": 400, "message" : "Fail to scratch card"}, status=status.HTTP_400_BAD_REQUEST)
