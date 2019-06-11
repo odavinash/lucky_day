@@ -78,6 +78,29 @@ class GetOffer(generics.ListAPIView):
             return Response ({"status": 400, "message" : "Fail to get offer"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GetRedeemOffer(generics.ListAPIView):
+    serializer_class = serializers.RedeemOfferSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.RedeemOffer
+
+    def get_queryset(self):
+        try:
+            page = self.kwargs['page']
+            start = ((page - 1)*10)
+            end = start + 10
+            return self.model.objects.all().order_by('-redeem_offer_id')[start:end]
+        except self.model.DoesNotExist:
+            return None
+
+    def list(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_queryset(), many=True)
+            return Response({'data': serializer.data})
+        except Exception as e:
+            print(e)
+            return Response ({"status": 400, "message" : "Fail to get offer"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UpdateProfile(generics.UpdateAPIView):
     serializer_class = serializers.ProfileSerializer
     permission_classes = (IsAuthenticated,)
@@ -91,6 +114,24 @@ class UpdateProfile(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         try:
             response = super(UpdateProfile, self).update(request, *args, **kwargs)
+            return Response({'success': True, 'data':response.data})
+        except Exception as e:
+            return Response({'message': format(e.args[-1]), 'success': False})
+
+
+class UpdateProfileMaster(generics.UpdateAPIView):
+    serializer_class = serializers.ProfileMasterSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.User
+    http_method_names = ['patch']
+
+    def get_object(self):
+        instance, _ = self.model.objects.get_or_create(id=self.request.user.id)
+        return instance
+
+    def update(self, request, *args, **kwargs):
+        try:
+            response = super(UpdateProfileMaster, self).update(request, *args, **kwargs)
             return Response({'success': True, 'data':response.data})
         except Exception as e:
             return Response({'message': format(e.args[-1]), 'success': False})
@@ -170,6 +211,22 @@ class WireTransfer(generics.CreateAPIView):
             return Response ({"status": 400, "message" : "Fail to Wire transfer"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class Paypal(generics.CreateAPIView):
+    serializer_class = serializers.PaypalferSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.Paypal
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response ({"status": 200, "message" : 'paypal add successfully.'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response ({"status": 400, "message" : "Fail to add Paypal"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class GetLeaderboard(generics.ListAPIView):
     serializer_class = serializers.LeaderBoardSerializer
     permission_classes = (IsAuthenticated,)
@@ -197,3 +254,23 @@ class GetLeaderboard(generics.ListAPIView):
         except Exception as e:
             print(e)
             return Response ({"status": 400, "message" : "Fail to get leaderboard"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AvailRedeemOffer(generics.UpdateAPIView):
+    serializer_class = serializers.AvailRedeemOfferSerializer
+    permission_classes = (IsAuthenticated,)
+    model = models.Profile
+    http_method_names = ['patch']
+
+    def get_object(self):
+        instance, _ = self.model.objects.get_or_create(user_id=self.request.user)
+        redeem_offer = models.RedeemOffer.objects.get(redeem_offer_id=self.kwargs['redeem_offer_id'])
+        instance.coin = instance.coin - redeem_offer.price
+        return instance
+
+    def update(self, request, *args, **kwargs):
+        try:
+            response = super(AvailRedeemOffer, self).update(request, *args, **kwargs)
+            return Response({'success': True, 'data':response.data})
+        except Exception as e:
+            return Response({'message': format(e.args[-1]), 'success': False})

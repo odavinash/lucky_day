@@ -76,8 +76,7 @@ class LoginSerializer(UserSerializer, serializers.Serializer):
         	print(user)
 
         self.user = user
-        print('data.....')
-        print(data)
+        
         return data
 
 
@@ -119,11 +118,25 @@ class OfferSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
+class RedeemOfferSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.RedeemOffer
+        fields = ('__all__')
+
+
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Profile
         fields = ('__all__')
+
+
+class ProfileMasterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.User
+        fields = ('first_name', 'last_name',)
 
 
 class ScratchCardSerializer(serializers.ModelSerializer):
@@ -177,12 +190,30 @@ class WireTransferSerializer(serializers.ModelSerializer):
         return super(WireTransferSerializer, self).create(validated_data)
 
 
+class PaypalferSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Paypal
+        exclude = ('user_id',)
+
+    def create(self, validated_data):
+        validated_data['user_id'] = self.context['request'].user
+
+        return super(PaypalferSerializer, self).create(validated_data)
+
+
 class LeaderBoardSerializer(serializers.ModelSerializer):
 
     first_name = serializers.CharField(source='user_id.first_name')
     last_name = serializers.CharField(source='user_id.last_name')
-    #profile = serializers.CharField(source='user_id.profile.first.profile_media')
-
+    
     class Meta:
         model = models.LeaderBoard
         fields = ('__all__')
+
+
+class AvailRedeemOfferSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Profile
+        fields = ('coin',)

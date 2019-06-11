@@ -177,7 +177,6 @@ SWAGGER_SETTINGS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        #'rest_framework.authentication.TokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
    'DEFAULT_PERMISSION_CLASSES': (
@@ -191,5 +190,4 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=36500),
     'JWT_AUTH_HEADER_PREFIX': 'Token',
-
 }

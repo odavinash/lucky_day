@@ -12,6 +12,9 @@ from django.utils import timezone
 def get_upload_path_offer(instance, filename):
     return os.path.join('offer', '{}.{}'.format(uuid.uuid4(), filename.split('.')[-1]))
 
+def get_upload_path_redeem_offer(instance, filename):
+    return os.path.join('offer', '{}.{}'.format(uuid.uuid4(), filename.split('.')[-1]))
+
 def get_upload_path_profile(instance, filename):
     return os.path.join('profile', '{}.{}'.format(uuid.uuid4(), filename.split('.')[-1]))
 
@@ -127,6 +130,15 @@ class WireTransfer(models.Model):
     amount = models.DecimalField(blank=True,  null=True, max_digits=10, decimal_places=2)
 
 
+class Paypal(models.Model):
+    class Meta:
+        db_table = "paypal"
+
+    paypal_primary_keys = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    paypal_id = models.CharField(null=False, blank=False, max_length=200)
+    
+
 class LeaderBoard(models.Model):
     class Meta:
         db_table = "leaderboard"
@@ -143,3 +155,16 @@ class App_Settings(models.Model):
 
     app_settings_id = models.AutoField(primary_key=True)
     top_up_coin = models.IntegerField(null=True, blank=True, default=0)
+
+
+class RedeemOffer(models.Model):
+    class Meta:
+        db_table = "redeem_offer"
+
+    redeem_offer_id = models.AutoField(primary_key=True)
+    redeem_offer_media = models.FileField(upload_to=get_upload_path_redeem_offer, blank=True, null=False)
+    title = models.CharField(null=False, blank=False, max_length=500)
+    price = models.IntegerField(null=True, blank=True)
+    feature = models.CharField(null=False, blank=False, max_length=5000)
+    description = models.CharField(null=False, blank=False, max_length=10000)
+    active = models.BooleanField(default=True)

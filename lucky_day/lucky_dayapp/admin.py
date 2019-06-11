@@ -15,6 +15,12 @@ class OfferAdmin(admin.ModelAdmin):
     search_fields = ('top_up_coin', 'cash')
 
 
+@admin.register(models.RedeemOffer)
+class RedeemOfferAdmin(admin.ModelAdmin):
+    list_display = ('redeem_offer_id', 'redeem_offer_media', 'title',)
+    search_fields = ('title', 'price')
+
+
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('profile_id', 'profile_media', 'user_id', 'coin', 'cash',)
@@ -37,6 +43,12 @@ class OrderAdmin(admin.ModelAdmin):
 class WireTransferAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'acc_no')
     search_fields = ('acc_no',)
+
+
+@admin.register(models.Paypal)
+class PaypalAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'paypal_id')
+    search_fields = ('paypal_id',)
 
 
 @admin.register(models.LeaderBoard)
