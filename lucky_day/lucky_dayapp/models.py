@@ -137,14 +137,15 @@ class Paypal(models.Model):
     paypal_primary_keys = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
     paypal_id = models.CharField(null=False, blank=False, max_length=200)
-    
+    amount = models.DecimalField(blank=True,  null=True, max_digits=10, decimal_places=2)
+
 
 class LeaderBoard(models.Model):
     class Meta:
         db_table = "leaderboard"
 
     leaderboard_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    user_id = models.ForeignKey(User, related_name='leaderboard', on_delete=models.CASCADE, db_column='user_id')
     rank_no = models.IntegerField(unique=False, null=False)
     date = models.DateField('date', null=False, default=timezone.now)
 

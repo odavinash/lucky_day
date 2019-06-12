@@ -246,7 +246,7 @@ class GetLeaderboard(generics.ListAPIView):
         try:
             serializer = self.get_serializer(self.get_queryset(), many=True)
             try:
-                user_rank = models.LeaderBoard.objects.values('rank_no', 'user_id__first_name', 'user_id__last_name', 'user_id__profile__profile_media').get(user_id=self.request.user)
+                user_rank = models.LeaderBoard.objects.values('rank_no', 'user_id__first_name', 'user_id__last_name', 'user_id__profile__coin', 'user_id__profile__profile_media').get(user_id=self.request.user)
             except Exception as e:
                 user_rank = ""
                 print(e)

@@ -206,7 +206,8 @@ class LeaderBoardSerializer(serializers.ModelSerializer):
 
     first_name = serializers.CharField(source='user_id.first_name')
     last_name = serializers.CharField(source='user_id.last_name')
-    
+    coin = serializers.CharField(source='user_id.profile.first.coin')
+
     class Meta:
         model = models.LeaderBoard
         fields = ('__all__')

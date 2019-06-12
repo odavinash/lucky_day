@@ -47,7 +47,7 @@ class WireTransferAdmin(admin.ModelAdmin):
 
 @admin.register(models.Paypal)
 class PaypalAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'paypal_id')
+    list_display = ('user_id', 'paypal_id', 'amount')
     search_fields = ('paypal_id',)
 
 
