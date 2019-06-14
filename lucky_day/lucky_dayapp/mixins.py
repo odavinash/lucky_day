@@ -42,7 +42,7 @@ class UserSerializer(object):
         
         try:
             profile = models.Profile.objects.get(user_id=self.user)
-            user['profile_media'] = str(profile.profile_media) if str(profile.profile_media)=="" else self.request.build_absolute_uri(str(profile.profile_media))
+            user['profile_media'] = str(profile.profile_media) if str(profile.profile_media)=="" else self.request.build_absolute_uri(str(profile.profile_media.url))
             user['coin'] = profile.coin
             user['cash'] = profile.cash
 
