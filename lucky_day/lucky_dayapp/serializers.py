@@ -70,11 +70,6 @@ class LoginSerializer(UserSerializer, serializers.Serializer):
             password=data.get('password'),
         )
 
-        if not user:
-        	print(user)
-        else:
-        	print(user)
-
         self.user = user
         
         return data

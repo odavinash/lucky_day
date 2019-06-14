@@ -37,7 +37,6 @@ class Login(generics.GenericAPIView):
         try:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            print(serializer)
             data = serializer.get_data()
             return Response({"status": 200, 'message': 'success', 'success': True, 'data': data})
         except Exception as e:
